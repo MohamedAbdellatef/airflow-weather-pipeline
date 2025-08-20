@@ -1,75 +1,59 @@
-version: "3.8"
-
-x-airflow-common: &airflow-common
-  image: apache/airflow:2.9.2
-  environment:
-    AIRFLOW__CORE__EXECUTOR: LocalExecutor
-    AIRFLOW__CORE__LOAD_EXAMPLES: "false"
-    AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "true"
-
-    # Connection to Postgres warehouse
-    AIRFLOW_CONN_WAREHOUSE_DB: ${AIRFLOW_CONN_WAREHOUSE_DB}
-  volumes:
-    - ./../airflow/dags:/opt/airflow/dags
-    - ./../airflow/plugins:/opt/airflow/plugins
-    - airflow_logs:/opt/airflow/logs
-  user: "${AIRFLOW_UID:-50000}:0"
+version: '3.8'
 
 services:
-  postgres-warehouse:
+  postgres:
     image: postgres:16
-    container_name: postgres-warehouse
     environment:
-      POSTGRES_USER: ${WAREHOUSE_USER}
-      POSTGRES_PASSWORD: ${WAREHOUSE_PASSWORD}
-      POSTGRES_DB: ${WAREHOUSE_DB}
+      POSTGRES_USER: Postgres
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
     ports:
-      - "5433:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${WAREHOUSE_USER} -d ${WAREHOUSE_DB}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - "5432:5432"
     volumes:
-      - warehouse_data:/var/lib/postgresql/data
-      - ./../scripts/init_db.sql:/docker-entrypoint-initdb.d/01_init.sql
-      - ./../scripts/seed_locations.sql:/docker-entrypoint-initdb.d/02_seed.sql
+      - postgres_data:/var/lib/postgresql/data
 
   airflow-init:
-    <<: *airflow-common
-    container_name: airflow-init
-    entrypoint: /bin/bash
-    command: -c "airflow db init && airflow users create --username admin --password admin --firstname Air --lastname Flow --role Admin --email admin@example.com"
+    image: apache/airflow:2.9.2
     depends_on:
-      postgres-warehouse:
-        condition: service_healthy
+      - postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://Postgres:airflow@postgres:5432/airflow
+      AIRFLOW__CORE__FERNET_KEY: "$(openssl rand -base64 32)"
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - airflow db init
+    volumes:
+      - ../airflow/dags:/opt/airflow/dags
+      - ../airflow/plugins:/opt/airflow/plugins
 
   airflow-webserver:
-    <<: *airflow-common
-    container_name: airflow-webserver
-    command: webserver
+    image: apache/airflow:2.9.2
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://Postgres:airflow@postgres:5432/airflow
     ports:
       - "8080:8080"
-    depends_on:
-      postgres-warehouse:
-        condition: service_healthy
+    command: webserver
+    volumes:
+      - ../airflow/dags:/opt/airflow/dags
+      - ../airflow/plugins:/opt/airflow/plugins
 
   airflow-scheduler:
-    <<: *airflow-common
-    container_name: airflow-scheduler
+    image: apache/airflow:2.9.2
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://Postgres:airflow@postgres:5432/airflow
     command: scheduler
-    depends_on:
-      postgres-warehouse:
-        condition: service_healthy
-
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8081:8080
-    depends_on:
-      - postgres-warehouse
+    volumes:
+      - ../airflow/dags:/opt/airflow/dags
+      - ../airflow/plugins:/opt/airflow/plugins
 
 volumes:
-  airflow_logs:
-  warehouse_data:
+  postgres_data:
