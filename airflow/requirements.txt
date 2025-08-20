@@ -1,0 +1,7 @@
+airflow-provider-http
+pandas
+requests
+psycopg2-binary
+SQLAlchemy
+python-dotenv
+pytest

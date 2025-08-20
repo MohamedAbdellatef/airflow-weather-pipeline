@@ -1,0 +1,21 @@
+# Ignore environment files with secrets
+.env
+.env.*
+docker/.env
+docker/.env.*
+
+# Airflow logs
+airflow/logs/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# VSCode / Codespaces
+.vscode/
+.devcontainer/
+
+# OS junk
+.DS_Store
+Thumbs.db
+docker/.env
