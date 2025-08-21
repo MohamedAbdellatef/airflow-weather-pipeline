@@ -12,7 +12,7 @@ This project is designed to showcase **production-grade pipeline skills**:
 
 ---
 ## 🏗️ High-Level Architecture
-The pipeline follows the Medallion Architecture to ensure data quality and lineage, progressively refining data from its raw state to a clean, query-ready format.
+The pipeline follows the **Medallion Architecture** (Bronze → Silver → Gold) to ensure data quality and lineage. In this project we implement **Bronze** (raw JSON) and **Silver** (clean structured data).
 ![Data Architecture](docs/data_architecture.png)
 ## Tech Stack
 <p>
@@ -26,24 +26,42 @@ The pipeline follows the Medallion Architecture to ensure data quality and linea
 ```
 airflow-weather-pipeline-project/
 ├── airflow/
-│ ├── dags/
-│ │ └── weather_etl.py # Main DAG
-│ ├── plugins/
-│ │ └── operators/
-│ │ ├── extract_weather_operator.py # Extract & Load → Bronze
-│ │ └── transform_load_operator.py # Transform & Load → Silver
-│ └── requirements.txt
+│   ├── dags/
+│   │   └── weather_etl.py                # Main DAG definition
+│   ├── plugins/
+│   │   └── operators/
+│   │       ├── extract_weather_operator.py   # Extract & Load → Bronze
+│   │       └── transform_load_operator.py    # Transform & Load → Silver
+│   └── requirements.txt
 ├── docker/
-│ ├── .env.example
-│ └── docker-compose.yml # Airflow + Postgres setup
+│   ├── .env.example                       # Example env vars (add API key here)
+│   └── docker-compose.yml                 # Airflow + Postgres setup
 ├── sql/
-│ ├── ddl_bronze_weather_data.sql # Bronze table schema
-│ └── ddl_silver_weather_data.sql # Silver table schema
+│   ├── ddl_bronze_weather_data.sql        # Bronze table schema
+│   └── ddl_silver_weather_data.sql        # Silver table schema
+├── docs/
+│   ├── data_architecture.png              # High-level architecture diagram
+│   └── data_model.drawio.png              # Data model (ERD)
 ├── .gitignore
 └── README.md
 ```
+## Data model
+The pipeline uses a multi-layered data warehouse design:
+
+- **Bronze Layer**: Stores raw JSON responses from the weather API.
+- **Silver Layer**: Stores cleaned and structured data for analytics.
+
+Below is the entity-relationship diagram:
+![Data model](docs/data_model.drawio.png)
+
 ## ⚙️ Setup Instructions
 1. Clone repo
 2. Add API key in `.env`
 3. Run `docker-compose up`
 4. Access Airflow UI at `http://localhost:8080`
+
+## 🚀 Future Improvements
+- Add Gold Layer (aggregated weather metrics).  
+- Deploy to cloud (AWS/GCP/Azure).  
+- Add tests for data validation.  
+- Add monitoring with Airflow SLA & alerts.  
