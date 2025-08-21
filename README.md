@@ -14,7 +14,6 @@ This project is designed to showcase **production-grade pipeline skills**:
 ## 🏗️ High-Level Architecture
 The pipeline follows the Medallion Architecture to ensure data quality and lineage, progressively refining data from its raw state to a clean, query-ready format.
 ![Data Architecture](docs/data_architecture.png)
-
 ## Tech Stack
 <p>
 <img src="https://img.shields.io/badge/Python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54"/>
