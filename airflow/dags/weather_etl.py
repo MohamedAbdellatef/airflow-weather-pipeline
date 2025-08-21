@@ -1,9 +1,7 @@
 from airflow import DAG
 from plugins.operators.extract_weather_operator import ExtractWeatherOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator
-from datetime import datetime,timedelta
-
-
+from datetime import datetime, timedelta
 
 with DAG(
     dag_id='weather_etl',
@@ -12,7 +10,7 @@ with DAG(
     schedule_interval='@daily',
     retries=3,
     retry_delay=timedelta(minutes=15),
-    catchup=False
+    catchup=False,
     tags=['weather', 'etl']
 ) as dag:
 
