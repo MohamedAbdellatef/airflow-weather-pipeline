@@ -2,16 +2,9 @@ from airflow import DAG
 from plugins.operators.extract_weather_operator import ExtractWeatherOperator
 from airflow.plugins.operators.transform_load_operator import TransformAndLoadSilverOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator
-from datetime import datetime, timedelta
+from datetime import datetime,timedelta
 
-"""
-DAG for ETL process of weather data from OpenWeatherMap API.
-Tasks:
-1. Create bronze table for raw data.
-2. Create silver table for transformed data.
-3. Extract weather data and load into bronze table.
-4. Transform raw data and load into silver table.
-"""
+
 
 with DAG(
     dag_id='weather_etl',
