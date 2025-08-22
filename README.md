@@ -1,5 +1,5 @@
 # 🌤️ Airflow Weather Data Pipeline
-This project demonstrates a **data engineering ETL pipeline** built with **Apache Airflow**.  
+This project demonstrates a **data engineering ETL pipeline** built with **Apache Airflow**, following modern **Medallion Architecture** (Bronze → Silver). 
 It extracts daily weather data from the [OpenWeatherMap API](https://openweathermap.org/api),  
 loads raw JSON into a **Bronze layer** in PostgreSQL, transforms it into a structured format,  
 and stores the results in a **Silver layer** for analytics.
@@ -17,6 +17,7 @@ This project is designed to showcase **production-grade pipeline skills**:
 - **Layered Data Architecture**: Bronze (raw JSON) → Silver (clean structured).  
 - **PostgreSQL Storage**: Reliable, production-ready storage engine.  
 - **Dockerized Environment**: Reproducible local setup with Airflow + Postgres.
+- Logging & monitoring support can be extended via Airflow task logs, SLA monitoring, and alerts.
 
   
 ## 🏗️ High-Level Architecture
