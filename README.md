@@ -1,5 +1,6 @@
 # 🌤️ Airflow Weather Data Pipeline
-This project implements a production-ready ETL pipeline using Apache Airflow, following the Medallion Architecture (Bronze → Silver). It extracts daily weather data from the OpenWeatherMap API, stores raw JSON in PostgreSQL (Bronze), transforms it into structured data (Silver), and makes it ready for analytics.
+This project implements a production-ready ETL pipeline with Apache Airflow, following the Medallion Architecture (Bronze → Silver).
+It extracts daily weather data from the OpenWeatherMap API, stores raw JSON in PostgreSQL (Bronze), and transforms it into structured data (Silver) for analytics.
 
 This project is designed to showcase **production-grade pipeline skills**:
 - Airflow DAG orchestration with custom operators
