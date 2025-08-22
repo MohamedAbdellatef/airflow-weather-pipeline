@@ -11,19 +11,30 @@ This project is designed to showcase **production-grade pipeline skills**:
 - Industry-ready ETL best practices
 
 ---
+## ✨ Features
+- **API Integration**: Extracts daily weather data from OpenWeatherMap API.  
+- **Airflow DAG Orchestration**: Custom operators for extract & transform steps.  
+- **Layered Data Architecture**: Bronze (raw JSON) → Silver (clean structured).  
+- **PostgreSQL Storage**: Reliable, production-ready storage engine.  
+- **Dockerized Environment**: Reproducible local setup with Airflow + Postgres.
+
+  
 ## 🏗️ High-Level Architecture
 The pipeline follows the **Medallion Architecture** (Bronze → Silver → Gold) to ensure data quality and lineage. In this project we implement **Bronze** (raw JSON) and **Silver** (clean structured data).
 ![Data Architecture](docs/data_architecture.png)
 
 
-## Pipeline Workflow
-Below is the Airflow DAG that orchestrates the ETL process:
+## 🔄 Pipeline Workflow
+The Airflow DAG defines the ETL orchestration:
+
 ![Pipeline Workflow](docs/pipeline_workflow.png)
-### Workflow Steps:
-1. **create_table** → Creates the raw table in PostgreSQL (Bronze layer).
-2. **extract_weather** → Extracts weather data daily from the API.
-3. **create_silver_table** → Prepares the cleaned Silver layer table.
-4. **transform_weather** → Cleans & transforms raw data, then loads into Silver table.
+
+### Task Breakdown
+1. **create_table** → Initializes the Bronze table in PostgreSQL.  
+2. **extract_weather** → Fetches daily weather JSON from API → Bronze.  
+3. **create_silver_table** → Sets up schema for Silver table.  
+4. **transform_weather** → Cleans & transforms Bronze data → Silver.  
+
 
 ## Tech Stack
 <p>
@@ -43,7 +54,7 @@ airflow-weather-pipeline-project/
 │   │   └── operators/
 │   │       ├── extract_weather_operator.py   # Extract & Load → Bronze
 │   │       └── transform_load_operator.py    # Transform & Load → Silver
-│   └── requirements.txt
+│   └── requirements.txt  # Python dependencies
 ├── docker/
 │   ├── .env.example                       # Example env vars (add API key here)
 │   └── docker-compose.yml                 # Airflow + Postgres setup
@@ -52,6 +63,7 @@ airflow-weather-pipeline-project/
 │   └── ddl_silver_weather_data.sql        # Silver table schema
 ├── docs/
 │   ├── data_architecture.png              # High-level architecture diagram
+│   ├── pipeline_workflow.png              # Airflow DAG screenshot
 │   └── data_model.drawio.png              # Data model (ERD)
 ├── .gitignore
 └── README.md
@@ -65,11 +77,19 @@ The pipeline uses a multi-layered data warehouse design:
 Below is the entity-relationship diagram:
 ![Data model](docs/data_model.drawio.png)
 
-## ⚙️ Setup Instructions
-1. Clone repo
-2. Add API key in `.env`
-3. Run `docker-compose up`
-4. Access Airflow UI at `http://localhost:8080`
+# 1. Clone repository
+git clone https://github.com/yourname/weather-pipeline.git
+cd weather-pipeline
+
+# 2. Start services
+docker-compose up -d
+
+# 3. Initialize Airflow DB
+docker exec -it airflow-webserver airflow db init
+
+# 4. Access Airflow UI
+http://localhost:8080
+(username: airflow, password: airflow)
 
 ## 🚀 Future Improvements
 - Add Gold Layer (aggregated weather metrics).  
