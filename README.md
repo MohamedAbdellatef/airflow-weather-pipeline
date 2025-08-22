@@ -14,6 +14,17 @@ This project is designed to showcase **production-grade pipeline skills**:
 ## 🏗️ High-Level Architecture
 The pipeline follows the **Medallion Architecture** (Bronze → Silver → Gold) to ensure data quality and lineage. In this project we implement **Bronze** (raw JSON) and **Silver** (clean structured data).
 ![Data Architecture](docs/data_architecture.png)
+
+
+## Pipeline Workflow
+Below is the Airflow DAG that orchestrates the ETL process:
+![Pipeline Workflow](docs/pipeline_workflow.png)
+### Workflow Steps:
+1. **create_table** → Creates the raw table in PostgreSQL (Bronze layer).
+2. **extract_weather** → Extracts weather data daily from the API.
+3. **create_silver_table** → Prepares the cleaned Silver layer table.
+4. **transform_weather** → Cleans & transforms raw data, then loads into Silver table.
+
 ## Tech Stack
 <p>
 <img src="https://img.shields.io/badge/Python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54"/>
